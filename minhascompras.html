@@ -34,56 +34,11 @@ body {
     padding: 15px;
 }
 
-/* ---------- TELA DE SENHA ---------- */
-#password-screen {
-    background: white;
-    padding: 40px 20px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,.3);
-}
-
-#password-screen h2 {
-    color: var(--cor-principal);
-}
-
-#password-screen p {
-    color: #555;
-    font-size: 14px;
-}
-
-#password-input {
-    width: 100%;
-    padding: 15px;
-    font-size: 16px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 2px solid #ccc;
-    text-align: center;
-}
-
-#login-button {
-    width: 100%;
-    padding: 12px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: none;
-    background: var(--cor-adicionar);
-    color: white;
-    cursor: pointer;
-}
-
-#message {
-    margin-top: 10px;
-    color: var(--vermelho-forte);
-    font-weight: bold;
-}
-
 /* ---------- APP ---------- */
 #calculator-content {
-    display: none;
     max-width: 400px;
     margin: auto;
+    width: 100%;
 }
 
 .header {
@@ -96,6 +51,7 @@ body {
 .header h1 {
     margin: 0;
     color: var(--cor-principal);
+    font-size: 24px;
 }
 
 .main-section {
@@ -113,6 +69,7 @@ body {
 .display-label {
     color: var(--verde-florescente);
     text-align: center;
+    font-size: 12px;
 }
 
 .display-valor {
@@ -125,7 +82,7 @@ body {
 
 .numpad {
     display: grid;
-    grid-template-columns: repeat(3,1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
 }
 
@@ -133,8 +90,14 @@ body {
     padding: 20px;
     font-size: 32px;
     border-radius: 12px;
-    border: none;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
     cursor: pointer;
+    transition: background 0.2s;
+}
+
+.numpad button:active {
+    background: #e0e0e0;
 }
 
 .btn-limpar {
@@ -142,10 +105,11 @@ body {
     background: linear-gradient(135deg, var(--vermelho-gradiente), var(--vermelho-forte));
     color: white;
     padding: 15px;
-    font-size: 20px;
+    font-size: 18px;
     border-radius: 12px;
     border: none;
     width: 100%;
+    cursor: pointer;
 }
 
 .btn-adicionar {
@@ -157,6 +121,7 @@ body {
     border-radius: 12px;
     border: none;
     width: 100%;
+    cursor: pointer;
 }
 
 #total {
@@ -171,80 +136,101 @@ body {
     background: white;
     padding: 20px;
     border-radius: 0 0 20px 20px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 </style>
 </head>
 
-<body onload="initialize()">
+<body>
 <div class="container">
 
-<div id="password-screen">
-    <h2>🔒 Calculadora de Compras – Mercado Fácil</h2>
-    <p>Acesso protegido para este dispositivo.</p>
-    <input id="password-input" type="password" placeholder="Digite sua senha">
-    <button id="login-button" onclick="login()">ACESSAR</button>
-    <div id="message"></div>
-</div>
-
-<div id="calculator-content">
-    <div class="header">
-        <h1>🛒 Calculadora de Compras</h1>
-    </div>
-
-    <div class="main-section">
-        <div class="display">
-            <div class="display-label">VALOR DIGITADO</div>
-            <div class="display-valor" id="display">R$ 0,00</div>
+    <div id="calculator-content">
+        <div class="header">
+            <h1>🛒 Calculadora de Compras</h1>
         </div>
 
-        <div class="numpad">
-            <button onclick="digitar('1')">1</button>
-            <button onclick="digitar('2')">2</button>
-            <button onclick="digitar('3')">3</button>
-            <button onclick="digitar('4')">4</button>
-            <button onclick="digitar('5')">5</button>
-            <button onclick="digitar('6')">6</button>
-            <button onclick="digitar('7')">7</button>
-            <button onclick="digitar('8')">8</button>
-            <button onclick="digitar('9')">9</button>
-            <button onclick="digitar('00')">00</button>
-            <button onclick="digitar('0')">0</button>
-            <button onclick="apagarUltimo()">⌫</button>
+        <div class="main-section">
+            <div class="display">
+                <div class="display-label">VALOR DIGITADO</div>
+                <div class="display-valor" id="display">R$ 0,00</div>
+            </div>
+
+            <div class="numpad">
+                <button onclick="digitar('1')">1</button>
+                <button onclick="digitar('2')">2</button>
+                <button onclick="digitar('3')">3</button>
+                <button onclick="digitar('4')">4</button>
+                <button onclick="digitar('5')">5</button>
+                <button onclick="digitar('6')">6</button>
+                <button onclick="digitar('7')">7</button>
+                <button onclick="digitar('8')">8</button>
+                <button onclick="digitar('9')">9</button>
+                <button onclick="digitar('00')">00</button>
+                <button onclick="digitar('0')">0</button>
+                <button onclick="apagarUltimo()">⌫</button>
+            </div>
+
+            <button class="btn-limpar" onclick="limparTudo()">🗑️ LIMPAR TUDO</button>
+            <button class="btn-adicionar" onclick="adicionarPreco()">✓ ADICIONAR</button>
         </div>
 
-        <button class="btn-limpar" onclick="limparTudo()">🗑️ LIMPAR TUDO</button>
-        <button class="btn-adicionar" onclick="adicionarPreco()">✓ ADICIONAR</button>
+        <div id="total">TOTAL: R$ 0,00</div>
+        <div class="lista-section">
+            <h3>🛍️ Carrinho (<span id="count">0</span>)</h3>
+            <div id="lista"></div>
+        </div>
     </div>
-
-    <div id="total">TOTAL: R$ 0,00</div>
-    <div class="lista-section">
-        <h3>🛍️ Carrinho (<span id="count">0</span>)</h3>
-        <div id="lista"></div>
-    </div>
-</div>
 </div>
 
 <script>
-let valorAtual="", total=0, itens=[];
-function digitar(n){valorAtual+=n;atualizar()}
-function apagarUltimo(){valorAtual=valorAtual.slice(0,-1);atualizar()}
-function atualizar(){document.getElementById("display").innerText="R$ "+((valorAtual||0)/100).toFixed(2).replace(".",",")}
-function adicionarPreco(){
-if(!valorAtual)return;
-let p=parseInt(valorAtual)/100;
-total+=p;
-itens.push(p);
-valorAtual="";
-atualizar();
-document.getElementById("total").innerText="TOTAL: R$ "+total.toFixed(2).replace(".",",");
-document.getElementById("count").innerText=itens.length;
+let valorAtual = "", total = 0, itens = [];
+
+function digitar(n) {
+    valorAtual += n;
+    atualizar();
 }
-function limparTudo(){valorAtual="";total=0;itens=[];atualizar();document.getElementById("total").innerText="TOTAL: R$ 0,00";document.getElementById("count").innerText=0}
-function initialize(){document.getElementById("password-screen").style.display="none";document.getElementById("calculator-content").style.display="block"}
-function login(){initialize()}
+
+function apagarUltimo() {
+    valorAtual = valorAtual.slice(0, -1);
+    atualizar();
+}
+
+function atualizar() {
+    let num = parseFloat(valorAtual || 0) / 100;
+    document.getElementById("display").innerText = "R$ " + num.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+}
+
+function adicionarPreco() {
+    if (!valorAtual || valorAtual === "0" || valorAtual === "00") return;
+    
+    let p = parseInt(valorAtual) / 100;
+    total += p;
+    itens.push(p);
+    
+    // Atualiza a lista visual (opcional)
+    const listaDiv = document.getElementById("lista");
+    const itemNovo = document.createElement("div");
+    itemNovo.innerText = `Item ${itens.length}: R$ ${p.toFixed(2).replace(".", ",")}`;
+    listaDiv.appendChild(itemNovo);
+
+    valorAtual = "";
+    atualizar();
+    
+    document.getElementById("total").innerText = "TOTAL: R$ " + total.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    document.getElementById("count").innerText = itens.length;
+}
+
+function limparTudo() {
+    valorAtual = "";
+    total = 0;
+    itens = [];
+    atualizar();
+    document.getElementById("total").innerText = "TOTAL: R$ 0,00";
+    document.getElementById("count").innerText = 0;
+    document.getElementById("lista").innerHTML = "";
+}
 </script>
 
 </body>
-</html>
-
 </html>
