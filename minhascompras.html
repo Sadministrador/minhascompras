@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minhas Compras Offline</title>
+<style>
+    /* -------------------------- */
+    /* ESTILOS GERAIS */
+    /* -------------------------- */
+    
+    :root {
+        --cor-principal: #4B0082;
+        --cor-adicionar: #007bff;
+        --cor-adicionar-hover: #0056b3;
+        --verde-florescente: #00FF00;
+        --verde-escuro-fundo: #003300;
+        --vermelho-forte: #8B0000;
+        --vermelho-gradiente: #CC0000;
+        --fundo-cinza-claro: #f4f4f4;
+    }
+
+    * { box-sizing: border-box; }
+    body { 
+        font-family: Arial, sans-serif;
+        padding: 0;
+        margin: 0;
+        background: linear-gradient(135deg, #764ba2 0%, var(--cor-principal) 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 15px;
+        width: 100%;
+    }
+    
+    /* -------------------------- */
+    /* ESTILOS TELA DE SENHA */
+    /* -------------------------- */
+    #password-screen {
+        background: white;
+        padding: 40px 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        max-width: 400px;
+        margin: auto;
+        text-align: center;
+    }
+
+    #password-screen h2 {
+        color: var(--cor-principal);
+        margin-top: 0;
+    }
+    
+    #password-screen p {
+        color: #555;
+        font-size: 14px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    #password-input {
+        width: 100%;
+        padding: 15px;
+        margin-bottom: 15px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        text-align: center;
+        /* A senha tem 12 caracteres */
+        maxlength: 12; 
+    }
+
+    #login-button {
+        background: var(--cor-adicionar);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        width: 100%;
+        transition: background-color 0.2s;
+    }
+
+    #login-button:hover {
+        background: var(--cor-adicionar-hover);
+    }
+
+    #message {
+        color: var(--vermelho-forte);
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    /* -------------------------- */
+    /* ESTILOS CALCULADORA */
+    /* -------------------------- */
+    #calculator-content {
+        /* Esconder por padrão até o login */
+        display: none; 
+        /* Diminui a largura da calculadora em 20% (de 500px para 400px) */
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .header {
+        background: white;
+        border-radius: 20px 20px 0 0;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    h1 { 
+        color: var(--cor-principal);
+        margin: 0;
+        font-size: 28px;
+    }
+    
+    .main-section {
+        background: white;
+        padding: 20px;
+        /* Removido o border-radius inferior para que o total/lista ocupe a parte de baixo */
+        border-radius: 0; 
+    }
+    
+    .instrucao {
+        background: #d4edda;
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border-left: 4px solid #28a745;
+    }
+    
+    .instrucao strong {
+        color: #155724;
+        display: block;
+        margin-bottom: 8px;
+        font-size: 16px;
+    }
+    
+    .instrucao p {
+        margin: 5px 0;
+        color: #155724;
+        font-size: 15px;
+    }
+    
+    /* FUNDO DO DISPLAY VERDE ESCURO */
+    .display {
+        background: linear-gradient(135deg, #004d00 0%, var(--verde-escuro-fundo) 100%);
+        /* Display reduzido */
+        padding: 20px 15px; 
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+    }
+    
+    /* TEXTO DO DISPLAY VERDE FLORESCENTE */
+    .display-label {
+        color: var(--verde-florescente);
+        font-size: 14px;
+        margin-bottom: 5px;
+        /* ALTERAÇÃO: Centraliza a label */
+        text-align: center; 
+    }
+    
+    /* VALOR DO DISPLAY VERDE FLORESCENTE */
+    .display-valor {
+        color: var(--verde-florescente);
+        /* Mantendo o ajuste da fonte para compactação visual */
+        font-size: 54px; 
+        font-weight: bold;
+        /* ALTERAÇÃO: Centraliza o valor */
+        text-align: center; 
+        font-family: 'Courier New', monospace;
+        text-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+        min-height: 70px;
+        line-height: 1;
+    }
+    
+    .numpad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    .numpad button {
+        /* ALTERAÇÃO: Redução do padding de 25px para 20px (aprox. 20% de redução no tamanho do botão) */
+        padding: 20px;
+        font-size: 32px;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+        color: #2c3e50;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: all 0.2s;
+    }
+    
+    .numpad button:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    /* AÇÕES EM UMA COLUNA AGORA */
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    /* BOTÃO LIMPAR TUDO MAIS VERMELHO E MAIS FINO */
+    .btn-limpar {
+        background: linear-gradient(135deg, var(--vermelho-gradiente) 0%, var(--vermelho-forte) 100%);
+        color: white;
+        padding: 15px;
+        font-size: 20px;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        width: 100%;
+    }
+    
+    .btn-limpar:active {
+        transform: scale(0.97);
+    }
+    
+    /* BOTÃO ADICIONAR AZUL */
+    .btn-adicionar {
+        background: linear-gradient(135deg, var(--cor-adicionar) 0%, var(--cor-adicionar-hover) 100%);
+        color: white;
+        padding: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+        margin-bottom: 0; /* Removido margem para encostar no total */
+        width: 100%;
+    }
+    
+    .btn-adicionar:active {
+        transform: scale(0.97);
+    }
+    
+    /* LISTA-SECTION agora engloba o que vem depois do TOTAL */
+    .lista-section {
+        background: white;
+        padding: 20px;
+        /* Adiciona o border-radius inferior aqui */
+        border-radius: 0 0 20px 20px; 
+        padding-top: 0; 
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(-20px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .empty-state, #lista {
+        display: none; 
+    }
+
+    /* TOTAL: LILÁS MAIS FORTE */
+    #total {
+        font-size: 38px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #764ba2 0%, var(--cor-principal) 100%);
+        color: white;
+        padding: 25px;
+        /* Arredondar só embaixo */
+        border-radius: 0 0 0 0; 
+        text-align: center;
+        margin: 15px 0 0 0; /* Margem superior para separar do botão Adicionar */
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    /* ESTILO PARA O H3 DO CARRINHO - Agora vem abaixo do total */
+    .lista-section h3 {
+        color: var(--cor-principal); 
+        margin-top: 20px; /* Margem superior para separar o título do carrinho do total */
+        margin-bottom: 0; 
+        font-size: 24px;
+        text-align: center;
+    }
+</style>
+</head>
+<body onload="initialize()">
+<div class="container">
+
+    <div id="password-screen">
+        <h2>🔒 Acesso Restrito - Minhas Compras</h2>
+        <p>A senha é necessária a cada 30 dias e é exclusiva para este dispositivo.</p>
+        
+        <input type="password" id="password-input" placeholder="Digite a senha única aqui" maxlength="12">
+        <button id="login-button" onclick="login()">ACESSAR</button>
+        <div id="message"></div>
+    </div>
+
+    <div id="calculator-content">
+        <div class="header">
+            <h1>🛒 Minhas Compras</h1>
+        </div>
+        
+        <div class="main-section">
+            <div class="instrucao">
+                <strong>💡 Como usar (fácil!):</strong>
+                <p>• Preço R$ 17,90 → Digite: <strong>1790</strong></p>
+                <p>• Preço R$ 5,50 → Digite: <strong>550</strong></p>
+                <p>• Preço R$ 0,99 → Digite: <strong>99</strong></p>
+            </div>
+            
+            <div class="display">
+                <div class="display-label">VALOR DIGITADO:</div>
+                <div class="display-valor" id="display">R$ 0,00</div>
+            </div>
+            
+            <div class="numpad">
+                <button onclick="digitar('1')">1</button>
+                <button onclick="digitar('2')">2</button>
+                <button onclick="digitar('3')">3</button>
+                <button onclick="digitar('4')">4</button>
+                <button onclick="digitar('5')">5</button>
+                <button onclick="digitar('6')">6</button>
+                <button onclick="digitar('7')">7</button>
+                <button onclick="digitar('8')">8</button>
+                <button onclick="digitar('9')">9</button>
+                <button onclick="digitar('00')">00</button>
+                <button onclick="digitar('0')">0</button>
+                <button onclick="apagarUltimo()">⌫</button>
+            </div>
+            
+            <div class="actions">
+                <button class="btn-limpar" onclick="limparTudo()">
+                    🗑️ LIMPAR TUDO
+                </button>
+            </div>
+            
+            <button class="btn-adicionar" onclick="adicionarPreco()">
+                ✓ ADICIONAR AO CARRINHO
+            </button>
+            
+        </div>
+        
+        <div id="total">TOTAL: R$ 0,00</div>
+        
+        <div class="lista-section">
+            <h3 style="color: var(--cor-principal); margin-top: 0;">
+                🛍️ Carrinho (<span id="count">0 item(s)</span>)
+            </h3>
+            <div id="lista">
+                </div>
+        </div>
+        </div>
+</div>
+
+<script>
+    /* -------------------------- */
+    /* LÓGICA DE SEGURANÇA (JAVASCRIPT) - MANTIDA */
+    /* -------------------------- */
+    
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+    const EXPIRATION_MS = 30 * ONE_DAY_MS;
+
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function simpleHash(str) {
+        let hash = 0;
+        if (str.length === 0) return hash;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash |= 0;
+        }
+        return hash.toString(16);
+    }
+    
+    function getDeviceId() {
+        let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+            deviceId = generateUUID();
+            localStorage.setItem('deviceId', deviceId);
+        }
+        return deviceId;
+    }
+
+    // FUNÇÃO DE VALIDAÇÃO MANUAL COM REGRAS SIMPLIFICADAS
+    function checkPasswordFormat(password) {
+        // Regras: 12 caracteres, 7 números (1-9), 2 zeros ('0'), 3 letras (1 maiúscula)
+        if (password.length !== 12) {
+            return false;
+        }
+
+        let countNum1_9 = 0;
+        let countZero = 0;
+        let countLetter = 0;
+        let hasUppercase = false;
+
+        for (const char of password) {
+            if (/[0-9]/.test(char)) {
+                if (char === '0') {
+                    countZero++;
+                } else {
+                    countNum1_9++;
+                }
+            } else if (/[a-zA-Z]/.test(char)) {
+                countLetter++;
+                if (/[A-Z]/.test(char)) {
+                    hasUppercase = true;
+                }
+            } else {
+                return false; // Caractere inválido (apenas números e letras permitidos)
+            }
+        }
+
+        // Verifica todas as condições de formato:
+        const isFormatValid = (
+            (countNum1_9 + countZero) === 9 && // 9 números no total (7 de 1-9 + 2 zeros)
+            countNum1_9 === 7 &&     // 7 números de 1 a 9
+            countZero === 2 &&         // Exatamente 2 zeros
+            countLetter === 3 &&       // Exatamente 3 letras
+            hasUppercase               // Pelo menos 1 maiúscula
+        );
+
+        return isFormatValid; 
+    }
+
+    function checkPasswordStatus() {
+        const deviceId = getDeviceId();
+        const storedPassHash = localStorage.getItem('passwordHash_' + deviceId);
+        const lastLogin = parseInt(localStorage.getItem('lastLogin_' + deviceId)) || 0;
+        const now = Date.now();
+
+        if (!storedPassHash || (now - lastLogin) > EXPIRATION_MS) {
+            showPasswordScreen(true);
+            return false;
+        }
+
+        showPasswordScreen(false);
+        return true;
+    }
+
+    function validatePassword(password) {
+        const deviceId = getDeviceId();
+        const inputHash = simpleHash(password + deviceId);
+        const storedPassHash = localStorage.getItem('passwordHash_' + deviceId);
+        const previousPassHash = localStorage.getItem('previousPasswordHash_' + deviceId);
+
+        // 1. Verifica o formato da senha - SE FALHAR, RETORNA ERRO GENÉRICO
+        if (!checkPasswordFormat(password)) {
+            return { success: false, message: '❌ Senha incorreta ou inválida para este dispositivo.' };
+        }
+        
+        // 2. SE ESTÁ VALIDANDO A SENHA ATUAL:
+        if (storedPassHash && inputHash === storedPassHash) {
+            if ((Date.now() - parseInt(localStorage.getItem('lastLogin_' + deviceId) || 0)) > EXPIRATION_MS) {
+                 return { success: false, message: '❌ Senha expirou! Você precisa digitar uma nova senha única.' };
+            }
+            localStorage.setItem('lastLogin_' + deviceId, Date.now());
+            return { success: true, message: '✅ Acesso liberado.' };
+        } 
+        
+        // 3. SE É UM NOVO LOGIN/REGISTRO (pois a anterior expirou ou não existia):
+        else if (storedPassHash === null || (Date.now() - parseInt(localStorage.getItem('lastLogin_' + deviceId) || 0)) > EXPIRATION_MS) {
+            
+            if (previousPassHash && inputHash === previousPassHash) {
+                return { success: false, message: '❌ Senha não pode ser a mesma usada há 30 dias.' };
+            }
+
+            // Salva a nova senha
+            localStorage.setItem('previousPasswordHash_' + deviceId, storedPassHash || '');
+            localStorage.setItem('passwordHash_' + deviceId, inputHash);
+            localStorage.setItem('lastLogin_' + deviceId, Date.now());
+            return { success: true, message: '✅ Nova senha registrada. Acesso liberado.' };
+        }
+
+        // 4. FALHA DE VALIDAÇÃO (Senha incorreta para este dispositivo)
+        return { success: false, message: '❌ Senha incorreta ou inválida para este dispositivo.' };
+    }
+
+    function login() {
+        const passwordInput = document.getElementById('password-input');
+        const password = passwordInput.value.trim();
+        const messageEl = document.getElementById('message');
+
+        const validationResult = validatePassword(password);
+
+        messageEl.textContent = validationResult.message;
+
+        if (validationResult.success) {
+            passwordInput.value = '';
+            setTimeout(() => {
+                showPasswordScreen(false);
+                // CHAMA limparTudo para garantir que o carrinho esteja zerado
+                limparTudo(true); 
+            }, 500);
+        }
+    }
+
+    function showPasswordScreen(show) {
+        document.getElementById('password-screen').style.display = show ? 'block' : 'none';
+        document.getElementById('calculator-content').style.display = show ? 'none' : 'block';
+    }
+
+    function initialize() {
+        getDeviceId();
+        if (checkPasswordStatus()) {
+            // Se logado, inicia a calculadora zerada (sem carregar dados)
+            limparTudo(true); 
+        } else {
+            document.getElementById('password-input').focus();
+            document.getElementById('password-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        }
+    }
+
+
+    /* -------------------------- */
+    /* LÓGICA DA CALCULADORA (RESTANTE) */
+    /* -------------------------- */
+
+    let valorAtual = '';
+    let total = 0;
+    let contador = 0;
+    let itens = [];
+
+    // As funções salvarDados() e carregarDados() para o carrinho foram removidas.
+
+    function digitar(numero) {
+        if (valorAtual.length >= 6) return;
+        valorAtual += numero;
+        atualizarDisplay();
+    }
+
+    function apagarUltimo() {
+        valorAtual = valorAtual.slice(0, -1);
+        atualizarDisplay();
+    }
+
+    function limparDisplay() {
+        valorAtual = '';
+        atualizarDisplay();
+    }
+
+    function atualizarDisplay() {
+        const display = document.getElementById('display');
+        
+        if (valorAtual === '') {
+            display.textContent = 'R$ 0,00';
+            return;
+        }
+        
+        const centavos = parseInt(valorAtual);
+        const reais = centavos / 100;
+        
+        display.textContent = 'R$ ' + reais.toFixed(2).replace('.', ',');
+    }
+
+    function adicionarPreco() {
+        if (valorAtual === '') {
+            alert('❌ Digite um valor primeiro!');
+            return;
+        }
+        
+        const centavos = parseInt(valorAtual);
+        const preco = centavos / 100;
+        
+        if (preco <= 0) {
+            alert('❌ Valor deve ser maior que zero!');
+            return;
+        }
+        
+        contador++;
+        total += preco;
+        
+        itens.push({
+            numero: contador,
+            preco: preco,
+            hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+        
+        atualizarLista();
+        atualizarTotal();
+        limparDisplay();
+        
+        if (typeof Audio !== 'undefined') {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+    }
+
+    function atualizarLista() {
+        const lista = document.getElementById('lista');
+        const emptyStateText = `<p>✅ **${itens.length}** item(s) no carrinho (Total acumulado: R$ ${total.toFixed(2).replace('.', ',')}).</p>`;
+
+        if (itens.length === 0) {
+            lista.innerHTML = `<div class="empty-state"><p>Comece a adicionar os preços!</p></div>`;
+        } else {
+            // No seu código original, a lista estava sendo representada por este 'empty-state'.
+            // Mantendo a lógica de exibir um resumo em vez de uma lista detalhada.
+            lista.innerHTML = `<div class="empty-state">${emptyStateText}</div>`;
+        }
+    }
+
+    function atualizarTotal() {
+        const totalEl = document.getElementById('total');
+        totalEl.textContent = `TOTAL: R$ ${total.toFixed(2).replace('.', ',')}`;
+        
+        document.getElementById('count').textContent = `${itens.length} item(s)`;
+        
+        totalEl.style.animation = 'none';
+        setTimeout(() => {
+            totalEl.style.animation = 'slideIn 0.3s ease';
+        }, 10);
+    }
+
+    function limparTudo(skipConfirm = false) {
+        if (!skipConfirm && itens.length > 0 && !confirm('Limpar todos os itens e recomeçar a lista?')) return;
+        
+        valorAtual = '';
+        total = 0;
+        contador = 0;
+        itens = [];
+
+        atualizarDisplay();
+        atualizarLista();
+        atualizarTotal();
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (document.getElementById('calculator-content').style.display === 'block') {
+            if (e.key >= '0' && e.key <= '9') {
+                e.preventDefault();
+                digitar(e.key);
+            } else if (e.key === 'Backspace') {
+                e.preventDefault();
+                apagarUltimo();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                adicionarPreco();
+            } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+                e.preventDefault();
+                limparTudo();
+            }
+        }
+    });
+</script>
+</body>
+</html>
