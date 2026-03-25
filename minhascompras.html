@@ -52,20 +52,6 @@ h1 {
     padding: 20px;
 }
 
-.instrucao {
-    background: #d4edda;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    border-left: 4px solid #28a745;
-}
-
-.instrucao strong {
-    color: #155724;
-    display: block;
-    margin-bottom: 8px;
-}
-
 .display {
     background: linear-gradient(135deg, #004d00 0%, var(--verde-escuro-fundo) 100%);
     padding: 20px 15px;
@@ -114,6 +100,7 @@ h1 {
     border: none;
     border-radius: 12px;
     width: 100%;
+    cursor: pointer;
 }
 
 .btn-adicionar {
@@ -125,6 +112,7 @@ h1 {
     border-radius: 12px;
     width: 100%;
     margin-top: 15px;
+    cursor: pointer;
 }
 
 #total {
@@ -141,46 +129,6 @@ h1 {
     border-radius: 0 0 20px 20px;
     padding: 20px;
 }
-
-.info-section {
-    background: white;
-    margin-top: 20px;
-    border-radius: 12px;
-    padding: 15px;
-    font-size: 14px;
-    line-height: 1.5;
-}
-.info-section h2 {
-    color: var(--cor-principal);
-    font-size: 18px;
-    margin-top: 0;
-}
-.info-section a {
-    color: var(--cor-adicionar);
-}
-
-.icon-section {
-    background: white;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.icon-section img {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 10px;
-}
-.icon-section button {
-    background: linear-gradient(135deg, var(--cor-adicionar), var(--cor-adicionar-hover));
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 12px;
-    cursor: pointer;
-}
 </style>
 </head>
 <body>
@@ -191,13 +139,6 @@ h1 {
     </div>
 
     <div class="main-section">
-
-        <div class="instrucao">
-            <strong>💡 Como usar:</strong>
-            <p>R$ 17,90 → 1790</p>
-            <p>R$ 5,50 → 550</p>
-            <p>R$ 0,99 → 99</p>
-        </div>
 
         <div class="display">
             <div class="display-label">VALOR DIGITADO</div>
@@ -232,21 +173,6 @@ h1 {
         <strong>🛍️ Itens no carrinho: <span id="count">0</span></strong>
     </div>
 
-    <!-- Seção do ícone com botão de download -->
-    <div class="icon-section">
-        <img src="data:image/png;base64,{{BASE64_DA_IMAGEM}}" alt="Ícone de Compras" id="icone">
-        <br>
-        <button onclick="baixarIcone()">⬇️ Baixar Ícone</button>
-    </div>
-
-    <div class="info-section">
-        <h2>📄 Instruções e Licença</h2>
-        <p><strong>Como abrir:</strong> Basta abrir esta página no navegador (Chrome, Edge, Firefox, etc.) e começar a digitar os preços.</p>
-        <p><strong>Funcionamento:</strong> Total offline, individual para cada usuário. Todos os dados são zerados ao atualizar a página.</p>
-        <p><strong>Licença de Uso:</strong> Este código é fornecido como <strong>licença de uso individual</strong>. Você pode usar e modificar à vontade, mas <strong>não pode revender ou distribuir sem autorização do autor</strong>.</p>
-        <p><strong>Link do projeto (opcional):</strong> <a href="#">https://github.com/seuusuario/MinhasComprasOffline</a></p>
-    </div>
-
 </div>
 
 <script>
@@ -267,11 +193,11 @@ function apagarUltimo() {
 
 function atualizarDisplay() {
     if (!valorAtual) {
-        display.textContent = 'R$ 0,00';
+        document.getElementById('display').textContent = 'R$ 0,00';
         return;
     }
     let reais = parseInt(valorAtual) / 100;
-    display.textContent = 'R$ ' + reais.toFixed(2).replace('.', ',');
+    document.getElementById('display').textContent = 'R$ ' + reais.toFixed(2).replace('.', ',');
 }
 
 function adicionarPreco() {
@@ -297,14 +223,6 @@ function limparTudo() {
     itens = 0;
     atualizarDisplay();
     atualizarTotal();
-}
-
-// Função para baixar o ícone
-function baixarIcone() {
-    const link = document.createElement('a');
-    link.href = document.getElementById('icone').src;
-    link.download = 'icone-compras.png';
-    link.click();
 }
 </script>
 
